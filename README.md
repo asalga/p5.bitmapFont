@@ -1,6 +1,8 @@
 p5.bitmapFont 
 =============
 
+![p5.bitmapFont](p5bitmapFont.png)
+
 A [p5.js](http://p5js.org/) library that enables rendering bitmap fonts.
 
 

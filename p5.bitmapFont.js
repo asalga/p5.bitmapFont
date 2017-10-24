@@ -9,25 +9,17 @@ let currFont = null;
 
 let BitmapFont = function() {
 
-    let sheet;
     this.glyphs = [];
     this.ready = false;
-
-    this.glyphWidth;
-    this.glyphHeight;
-    this.glyphBorder;
 
     /*
       Split up the spritesheet
     */
     this.splitImage = function(img, cfg) {
-        img.loadPixels();
-        sheet = img;
-
         Object.assign(this, cfg);
+        img.loadPixels();
 
         let charCode = 0;
-
         for (let y = 0; y < cfg.rows; ++y) {
             for (let x = 0; x < cfg.cols; ++x) {
 
@@ -77,7 +69,8 @@ p5.prototype.bitmapTextFont = function(font) {
 
 
 /*
- */
+
+*/
 p5.prototype.bitmapTextSize = function(size) {};
 
 
@@ -97,6 +90,6 @@ p5.prototype.bitmapText = function(str, x, y) {
     for (let i = 0, len = str.length; i < len; ++i) {
         let asciiCode = str[i].charCodeAt(0) - 32;
         let glyph = currFont.getGlyph(asciiCode);
-        image(glyph, x + (i * (currFont.glyphWidth + currFont.glyphBorder)), y);
+        image(glyph, x + (i * (currFont.glyphWidth + currFont.kerning)), y);
     }
 };
