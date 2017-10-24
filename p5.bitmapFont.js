@@ -9,6 +9,7 @@ let currFont = null;
 
 let BitmapFont = function() {
 
+    let sheet;
     this.glyphs = [];
     this.ready = false;
 
@@ -16,10 +17,14 @@ let BitmapFont = function() {
       Split up the spritesheet
     */
     this.splitImage = function(img, cfg) {
-        Object.assign(this, cfg);
         img.loadPixels();
+        sheet = img;
+
+        cfg.kerning = cfg.kerning || 0;
+        Object.assign(this, cfg);
 
         let charCode = 0;
+
         for (let y = 0; y < cfg.rows; ++y) {
             for (let x = 0; x < cfg.cols; ++x) {
 
