@@ -3,16 +3,29 @@
 
 <head>
     <title>Example of p5.bitmapFont</title>
-    
     <script language="javascript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.3/p5.min.js"></script>
-    <script language="javascript" type="text/javascript" src="http://raw.githubusercontent.com/asalga/p5.bitmapFont/master/p5.bitmapFont.js"></script>
+    <script language="javascript" type="text/javascript" src="https://rawgit.com/asalga/p5.bitmapFont/master/p5.bitmapFont.js"></script>
     <script>
+    let bitmapFont;
+
     function setup() {
         createCanvas(500, 500);
+        bitmapTextFont(bitmapFont);
     }
 
     function draw() {
-        background(0);
+        background(0, 0, 0);
+        bitmapText("Frame count: " + frameCount, 40, 40);
+    }
+
+    function preload() {
+        bitmapFont = loadBitmapFont('data/sonicFont@2.png', {
+            glyphWidth: 8 * 2,
+            glyphHeight: 8 * 2,
+            glyphBorder: 0,
+            rows: 12,
+            cols: 8
+        });
     }
     </script>
 </head>
