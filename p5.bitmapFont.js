@@ -88,8 +88,14 @@ p5.prototype.bitmapTextSize = function(size) {};
 */
 p5.prototype.bitmapText = function(str, x, y) {
 
-    if (!currFont.ready) {
+    if (currFont == null || !currFont.ready) {
         return;
+    }
+
+    // If user tries to pass in zero,
+    // nothing renders, so let's just convert to a string.
+    if (typeof(str) === 'number') {
+        str = '' + str;
     }
 
     for (let i = 0, len = str.length; i < len; ++i) {
