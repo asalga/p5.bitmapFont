@@ -4,22 +4,30 @@
 <head>
     <title>Example of p5.bitmapFont</title>
     <script language="javascript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.3/p5.min.js"></script>
-    <script language="javascript" type="text/javascript" src="https://rawgit.com/asalga/p5.bitmapFont/master/p5.bitmapFont.js"></script>
+    <!-- <script language="javascript" type="text/javascript" src="https://rawgit.com/asalga/p5.bitmapFont/master/p5.bitmapFont.js"></script> -->
+    <script language="javascript" type="text/javascript" src="../p5.bitmapFont.js"></script>
+    <!-- usage -->
     <script>
-    let bitmapFont;
+    let sonicFont,
+        scummFont;
 
     function setup() {
-        createCanvas(500, 500);
-        bitmapTextFont(bitmapFont);
+        createCanvas(320, 240);
     }
 
     function draw() {
-        background(0, 0, 0);
-        bitmapText("Frame count: " + frameCount, 40, 40);
+        // background(0, 0, 0);
+        background(255);
+
+        bitmapTextFont(sonicFont);
+        bitmapText(`Frame count: ${frameCount}`, 20, 20);
+
+        bitmapTextFont(scummFont);
+        bitmapText(`abc ABC 123 456 789 XYZ`, 20, 50);
     }
 
     function preload() {
-        bitmapFont = loadBitmapFont('data/sonicFont@2.png', {
+        sonicFont = loadBitmapFont('data/sonicFont@2.png', {
             glyphWidth: 8 * 2,
             glyphHeight: 8 * 2,
             glyphBorder: 0,
@@ -27,6 +35,8 @@
             cols: 8,
             kerning: 0
         });
+
+        scummFont = loadBitmapFont('data/var-width/scumm.png', 'data/var-width/scumm.json');
     }
     </script>
 </head>

@@ -33,6 +33,9 @@ function preload() {
     rows: 12,
     cols: 8
   });
+
+function preload() {
+  bitmapFont = loadBitmapFont('data/font@2.png', 'data/font@2.json');
 }
 
 ```
