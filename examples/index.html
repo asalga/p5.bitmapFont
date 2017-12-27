@@ -12,7 +12,7 @@
         scummFont;
 
     function setup() {
-        createCanvas(620, 240);
+        createCanvas(400, 250);
     }
 
     function draw() {
@@ -22,9 +22,9 @@
         bitmapTextFont(sonicFont);
         bitmapText(`Monospaced font ${frameCount}`, 20, 20);
 
-        // tint(255, 0, 0);
+        tint(0, 255, 0);
         bitmapTextFont(scummFont);
-        bitmapText(`Variable Width Font..`, 20, 50);
+        bitmapText(`-> Variable Width Font...`, 20, 50);
     }
 
     function preload() {
