@@ -13,29 +13,36 @@ Usage:
 
 ```javascript
 
-let bitmapFont;
+let sonicFont,
+    scummFont;
 
-function setup() {
-  createCanvas(500, 500);
-  bitmapTextFont(bitmapFont);
-}
+  function setup() {
+      createCanvas(400, 250);
+  }
 
-function draw() {
-  background(0, 0, 0);
-  bitmapText("Hello, there!", 40, 40);
-}
+  function draw() {
+      background(0);
 
-function preload() {
-  bitmapFont = loadBitmapFont('data/font@2.png', {
-    glyphWidth: 8 * 2,
-    glyphHeight: 8 * 2,
-    glyphBorder: 0,
-    rows: 12,
-    cols: 8
-  });
+      noTint();
+      bitmapTextFont(sonicFont);
+      bitmapText(`Monospaced font ${frameCount}`, 20, 20);
 
-function preload() {
-  bitmapFont = loadBitmapFont('data/font@2.png', 'data/font@2.json');
-}
+      tint(0, 255, 0);
+      bitmapTextFont(scummFont);
+      bitmapText(`-> Variable Width Font...`, 20, 50);
+  }
+
+  function preload() {
+      sonicFont = loadBitmapFont('data/sonicFont@2.png', {
+          glyphWidth: 8 * 2,
+          glyphHeight: 8 * 2,
+          glyphBorder: 0,
+          rows: 12,
+          cols: 8,
+          kerning: 0
+      });
+
+      scummFont = loadBitmapFont('data/var-width/scumm.png', 'data/var-width/scumm.json');
+  }
 
 ```
