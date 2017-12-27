@@ -5,7 +5,7 @@
   Render text using a bitmap with P5.js
 
   Oct 24 - Created
-  Dec 27 - Adding variable width functionality
+  Dec 27 - Added variable width font functionality
 */
 
 let currFont = null;
@@ -45,23 +45,52 @@ let BitmapFont = function() {
     /*
      */
     this.splitImageWithMetaData = function(img, cfg) {
-        console.log('splitImageWithMetaData');
-
         img.loadPixels();
         this.usingGrid = false;
-        // Object.assign(this, cfg);
 
-        let chars = cfg.font.chars.char;
+        let chars = cfg.chars.char;
 
-        for (let i of chars) {
-            let c = i['-id'],
-                x = i['-x'],
-                y = i['-y'];
+        for (let c of chars) {
+            let meta = this.glyphMetaData;
+            let scale = cfg.info.scale;
 
-            // this.glyphMetaData[c] = i;
+            meta[c.id] = c;
+            meta[c.id].yoffset = parseInt(c.yoffset * scale, 10);
+            meta[c.id].xadvance = parseInt(c.xadvance * scale, 10);
+            meta[c.id].width = parseInt(c.width, 10);
+            meta[c.id].height = parseInt(c.height, 10);
 
-            this.glyphs[c] = img.get(x, y, 16, 16);
-            // console.log(x, y, this.glyphs[c]);
+            let origImg = img.get(c.x, c.y, c.width, c.height);
+
+            if (scale === 1) {
+                this.glyphs[c.id] = origImg;
+            } else {
+                let outImg = this.glyphs[c.id] = createImage(c.width * scale, c.height * scale);
+
+                origImg.loadPixels();
+                outImg.loadPixels();
+
+                let x, y, u, v;
+
+                // Copied from my texture demo 
+                // https://www.openprocessing.org/sketch/437855
+                for (let i = 0; i < outImg.pixels.length; ++i) {
+
+                    x = (i % outImg.width) / outImg.width;
+                    y = floor(i / outImg.width) / outImg.height;
+
+                    u = ceil(x * origImg.width);
+                    v = ceil(y * origImg.height);
+
+                    let textureIdx = (4 * v * origImg.width) + (4 * u);
+
+                    outImg.pixels[4 * i + 0] = origImg.pixels[textureIdx + 0];
+                    outImg.pixels[4 * i + 1] = origImg.pixels[textureIdx + 1];
+                    outImg.pixels[4 * i + 2] = origImg.pixels[textureIdx + 2];
+                    outImg.pixels[4 * i + 3] = origImg.pixels[textureIdx + 3];
+                }
+                this.glyphs[c.id].updatePixels();
+            }
         }
         this.ready = true;
     };
@@ -86,38 +115,28 @@ let BitmapFont = function() {
   {Function}       callback   - Called once font is ready
 */
 p5.prototype.loadBitmapFont = function(data, p2, callback) {
-    console.log('loadBitmapFont');
-    
-    this._incrementPreload();
     let that = this;
-
     let newFont = new BitmapFont();
 
+    this._incrementPreload();
+
     function done() {
-        callback && callback();
         that._decrementPreload();
+        callback && callback();
     }
 
     // loadBitmapFont('font.png', 'font.json');
     if (typeof p2 === 'string') {
-
-        console.log(`loadBitmapFont('font.png', 'font.json')`);
-
         fetch(p2)
             .then(res => res.json())
             .then(json => p5.prototype.loadImage(data, function(img) {
-                console.log(`loadImage`);
-
                 newFont.splitImageWithMetaData(img, json);
-                newFont.testImg = img;
-
                 done();
             }));
     }
 
     // loadBitmapFont('font.png', {...});
     else if (typeof data === 'string') {
-        // console.log(`loadBitmapFont(${data})`);
         p5.prototype.loadImage(data, function(img) {
             newFont.splitImageInGrid(img, p2);
             done();
@@ -139,11 +158,7 @@ p5.prototype.loadBitmapFont = function(data, p2, callback) {
 /*
  */
 p5.prototype.bitmapTextFont = function(font) {
-    if (typeof font !== 'undefined') {
-        currFont = font;
-    } else {
-      console.log('null..');
-    }
+    currFont = font;
 };
 
 
@@ -175,18 +190,24 @@ p5.prototype.bitmapText = function(str, x, y) {
 
     if (currFont.usingGrid === true) {
         for (let i = 0, len = str.length; i < len; ++i) {
+            // TODO: comment on magic number
             let code = str[i].charCodeAt(0) - 32;
             let glyph = currFont.getGlyph(code);
             image(glyph, x + (i * (currFont.glyphWidth + currFont.kerning)), y);
         }
     } else {
+        let xadvance = 0;
+
         for (let i = 0, len = str.length; i < len; ++i) {
-            let code = str[i].charCodeAt(0) - 32;
+            let code = str[i].charCodeAt(0);
             let glyph = currFont.getGlyph(code);
+
+            // TODO: fix me
             if (glyph) {
-                image(glyph, x + (i * 8), y);
+                let yoffset = currFont.glyphMetaData[code].yoffset;
+                image(glyph, x + xadvance, y + yoffset);
+                xadvance += currFont.glyphMetaData[code].xadvance + 1;
             }
         }
     }
-
 };
