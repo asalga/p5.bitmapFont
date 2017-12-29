@@ -265,7 +265,6 @@ let bitmapText = function(str, xScreenPos, yScreenPos) {
 };
 
 module.exports = function setup(p5) {
-  p = p5;
   p5.prototype.loadBitmapFont = loadBitmapFont;
   p5.prototype.bitmapTextFont = bitmapTextFont;
   p5.prototype.bitmapText = bitmapText 
