@@ -12,45 +12,47 @@ API
 Usage:
 
 ```javascript
+let monospacedFont,
+    varWidthFont,
+    varWidthFontWithKerning;
 
-let sonicFont,
-    scummFont;
+function preload() {
+    monospacedFont = loadBitmapFont('data/sonicFont@2.png', {
+        glyphWidth: 8 * 2,
+        glyphHeight: 8 * 2,
+        glyphBorder: 0,
+        rows: 12,
+        cols: 8,
+        kerning: 0
+    });
 
-  function setup() {
-      createCanvas(400, 250);
-  }
+    variableWidthFont = loadBitmapFont('data/var-width/scumm.png', 'data/var-width/scumm.json');
 
-  function draw() {
-      background(0);
+    varWidthFontWithKerning = loadBitmapFont('data/var-width/cooper.png', 'data/var-width/cooper.json');
+}
 
-      noTint();
-      bitmapTextFont(sonicFont);
-      bitmapText(`Monospaced font ${frameCount}`, 20, 20);
+function setup() {
+    createCanvas(400, 250);
+}
 
-      tint(0, 255, 0);
-      bitmapTextFont(scummFont);
-      bitmapText(`-> Variable Width Font...`, 20, 50);
-  }
+function draw() {
+    background(0);
 
-  function preload() {
-      sonicFont = loadBitmapFont('data/sonicFont@2.png', {
-          glyphWidth: 8 * 2,
-          glyphHeight: 8 * 2,
-          glyphBorder: 0,
-          rows: 12,
-          cols: 8,
-          kerning: 0
-      });
+    push();
+    tint(0, 255, 0);
+    bitmapTextFont(variableWidthFont);
+    bitmapText(`Variable Width Font...`, 10, 40);
+    pop();
 
-      scummFont = loadBitmapFont('data/var-width/scumm.png', 'data/var-width/scumm.json');
-  }
+    bitmapTextFont(monospacedFont);
+    bitmapText(`Monospaced font ${frameCount}`, 10, 10);
 
+    bitmapTextFont(varWidthFontWithKerning);
+    bitmapText(`Variable width & kerning`, 5, 70);
+}
 ```
-
-
 TODO:
 -----
-
 - fix exposed currFont var
 - jslint code
 - test perf on non-static strings

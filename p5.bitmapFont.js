@@ -8,7 +8,7 @@
   Dec 27 - Added variable width font functionality
   Dec 28 - Added kerning
 */
-// 'use strict';
+'use strict';
 
 let currFont = null;
 
@@ -77,6 +77,12 @@ let BitmapFont = function() {
 
             let origImg = img.get(c.x, c.y, c.width, c.height);
 
+            // Ignore any chars with invalid dimensions
+            if(c.height === 0 || c.width === 0){
+                continue;
+            }
+
+            //
             if (scale === 1) {
                 this.glyphs[c.id] = origImg;
             }
