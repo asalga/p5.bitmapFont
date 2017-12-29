@@ -23,7 +23,7 @@ function preload() {
         glyphBorder: 0,
         rows: 12,
         cols: 8,
-        kerning: 0
+        charSpacing: 2
     });
 
     variableWidthFont = loadBitmapFont('data/var-width/scumm.png', 'data/var-width/scumm.json');

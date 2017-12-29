@@ -1,6 +1,7 @@
 /*
   Andor Saga
   Oct 2017
+  v 1.0
 
   Render text using a bitmap with P5.js
 
@@ -16,7 +17,7 @@ let BitmapFont = function() {
 
     this.glyphs = [];
     this.glyphMetaData = [];
-    this.kernings = new Map();
+    this.kernings = new Map;
     this.usingGrid = true;
     this.ready = false;
     this.kernSeparator = '_';
@@ -229,7 +230,8 @@ p5.prototype.bitmapText = function(str, xScreenPos, yScreenPos) {
             // TODO: comment on magic number
             let code = str[i].charCodeAt(0) - 32;
             let glyph = currFont.getGlyph(code);
-            image(glyph, xScreenPos + (i * (currFont.glyphWidth + currFont.kerning)), yScreenPos);
+
+            image(glyph, xScreenPos + (i * (currFont.glyphWidth + currFont.charSpacing)), yScreenPos);
         }
     }
     // 
@@ -256,7 +258,7 @@ p5.prototype.bitmapText = function(str, xScreenPos, yScreenPos) {
             }
 
             // TODO: remove magic number
-            xAdvance += currFont.glyphMetaData[char].xadvance + 1;
+            xAdvance += currFont.glyphMetaData[char].xadvance;
             lastChar = char;
         }
     }
