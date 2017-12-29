@@ -145,7 +145,7 @@ let BitmapFont = function() {
   {Object|String}  p2         - metadata
   {Function}       callback   - Called once font is ready
 */
-p5.prototype.loadBitmapFont = function(data, p2, callback) {
+let loadBitmapFont = function(data, p2, callback) {
     let that = this;
     let newFont = new BitmapFont();
 
@@ -192,7 +192,7 @@ p5.prototype.loadBitmapFont = function(data, p2, callback) {
 /*
     TODO: refactor
  */
-p5.prototype.bitmapTextFont = function(font) {
+let bitmapTextFont = function(font) {
     currFont = font;
 };
 
@@ -201,7 +201,7 @@ p5.prototype.bitmapTextFont = function(font) {
   Copying the Processing API, but how should this
   accomplish the user intent...
 */
-p5.prototype.bitmapTextSize = function() {};
+let bitmapTextSize = function() {};
 
 
 /*
@@ -213,7 +213,7 @@ p5.prototype.bitmapTextSize = function() {};
   {Number} xScreenPos   - render from left to right
   {Number} yScreenPos   - baseline
 */
-p5.prototype.bitmapText = function(str, xScreenPos, yScreenPos) {
+let bitmapText = function(str, xScreenPos, yScreenPos) {
 
     if (currFont === null || !currFont.ready) {
         return;
@@ -263,3 +263,10 @@ p5.prototype.bitmapText = function(str, xScreenPos, yScreenPos) {
         }
     }
 };
+
+module.exports = function setup(p5) {
+  p = p5;
+  p5.prototype.loadBitmapFont = loadBitmapFont;
+  p5.prototype.bitmapTextFont = bitmapTextFont;
+  p5.prototype.bitmapText = bitmapText 
+}
