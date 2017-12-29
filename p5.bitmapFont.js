@@ -13,8 +13,9 @@
 
 let currFont = null;
 
-let BitmapFont = function() {
+let BitmapFont = function(p5) {
 
+    this.p5 = p5;
     this.glyphs = [];
     this.glyphMetaData = [];
     this.kernings = new Map;
@@ -49,6 +50,8 @@ let BitmapFont = function() {
     /*
      */
     this.splitImageWithMetaData = function(img, cfg) {
+        let that = this;
+
         img.loadPixels();
         this.usingGrid = false;
 
@@ -93,7 +96,7 @@ let BitmapFont = function() {
                 // as a 0x0 image, so account for that.
                 if (c.width > 0 && c.height > 0) {
 
-                    let outImg = createImage(c.width * scale, c.height * scale);
+                    let outImg = that.p5.createImage(c.width * scale, c.height * scale);
 
                     origImg.loadPixels();
                     outImg.loadPixels();
@@ -147,7 +150,7 @@ let BitmapFont = function() {
 */
 let loadBitmapFont = function(data, p2, callback) {
     let that = this;
-    let newFont = new BitmapFont();
+    let newFont = new BitmapFont(this);
 
     this._incrementPreload();
 
@@ -161,7 +164,7 @@ let loadBitmapFont = function(data, p2, callback) {
     if (typeof p2 === 'string') {
         fetch(p2)
             .then(res => res.json())
-            .then(json => p5.prototype.loadImage(data, function(img) {
+            .then(json => that.loadImage(data, function(img) {
                 newFont.splitImageWithMetaData(img, json);
                 done();
             }));
@@ -170,7 +173,7 @@ let loadBitmapFont = function(data, p2, callback) {
     // USING: image & obj
     // loadBitmapFont('font.png', {...});
     else if (typeof data === 'string') {
-        p5.prototype.loadImage(data, function(img) {
+        that.loadImage(data, function(img) {
             newFont.splitImageInGrid(img, p2);
             done();
         });
@@ -214,6 +217,7 @@ let bitmapTextSize = function() {};
   {Number} yScreenPos   - baseline
 */
 let bitmapText = function(str, xScreenPos, yScreenPos) {
+    let that = this;
 
     if (currFont === null || !currFont.ready) {
         return;
@@ -231,7 +235,7 @@ let bitmapText = function(str, xScreenPos, yScreenPos) {
             let code = str[i].charCodeAt(0) - 32;
             let glyph = currFont.getGlyph(code);
 
-            image(glyph, xScreenPos + (i * (currFont.glyphWidth + currFont.charSpacing)), yScreenPos);
+            that.image(glyph, xScreenPos + (i * (currFont.glyphWidth + (currFont.charSpacing|| 0) )), yScreenPos);
         }
     }
     // 
@@ -254,7 +258,7 @@ let bitmapText = function(str, xScreenPos, yScreenPos) {
             let xTotal = xScreenPos + xAdvance + xKerning;
 
             if (glyph) {
-                image(glyph, xTotal, yScreenPos + yoffset);
+                that.image(glyph, xTotal, yScreenPos + yoffset);
             }
 
             // TODO: remove magic number
