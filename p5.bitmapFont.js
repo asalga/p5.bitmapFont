@@ -70,10 +70,10 @@ let BitmapFont = function() {
             // The conversion from XML to JSON may have made the 
             // values strings, so convert them to Numbers with '+'.
             meta[c.id] = c;
-            meta[c.id].yoffset = parseInt(c.yoffset, 10) * scale;
-            meta[c.id].xadvance = parseInt(c.xadvance, 10) * scale;
-            meta[c.id].width = parseInt(c.width, 10);
-            meta[c.id].height = parseInt(c.height, 10);
+            meta[c.id].yoffset = +c.yoffset * scale;
+            meta[c.id].xadvance = +c.xadvance * scale;
+            meta[c.id].width = +c.width;
+            meta[c.id].height = +c.height;
 
             let origImg = img.get(c.x, c.y, c.width, c.height);
 
