@@ -1,0 +1,22 @@
+{
+  "name": "p5-bitmapfont",
+  "version": "1.0.0",
+  "description": "p5.bitmapFont  =============",
+  "main": "p5.bitmapFont.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/asalga/p5.bitmapFont.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/asalga/p5.bitmapFont/issues"
+  },
+  "homepage": "https://github.com/asalga/p5.bitmapFont#readme"
+}
