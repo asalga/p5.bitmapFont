@@ -8,7 +8,7 @@
   Dec 27 - Added variable width font functionality
   Dec 28 - Added kerning
 */
-'use strict';
+// 'use strict';
 
 let currFont = null;
 
@@ -62,13 +62,16 @@ let BitmapFont = function() {
             }
         }
 
+        //
         for (let c of chars) {
             let meta = this.glyphMetaData;
-            let scale = cfg.info.scale;
+            let scale = cfg.info.scale || 1;
 
+            // The conversion from XML to JSON may have made the 
+            // values strings, so convert them to Numbers with '+'.
             meta[c.id] = c;
-            meta[c.id].yoffset = parseInt(c.yoffset * scale, 10);
-            meta[c.id].xadvance = parseInt(c.xadvance * scale, 10);
+            meta[c.id].yoffset = parseInt(c.yoffset, 10) * scale;
+            meta[c.id].xadvance = parseInt(c.xadvance, 10) * scale;
             meta[c.id].width = parseInt(c.width, 10);
             meta[c.id].height = parseInt(c.height, 10);
 
@@ -76,32 +79,41 @@ let BitmapFont = function() {
 
             if (scale === 1) {
                 this.glyphs[c.id] = origImg;
-            } else {
-                let outImg = this.glyphs[c.id] = createImage(c.width * scale, c.height * scale);
+            }
+            // 
+            else {
+                // Some characters (esp. space) may be represented 
+                // as a 0x0 image, so account for that.
+                if (c.width > 0 && c.height > 0) {
 
-                origImg.loadPixels();
-                outImg.loadPixels();
+                    let outImg = createImage(c.width * scale, c.height * scale);
 
-                let x, y, u, v;
+                    origImg.loadPixels();
+                    outImg.loadPixels();
 
-                // Copied from my texture demo 
-                // https://www.openprocessing.org/sketch/437855
-                for (let i = 0; i < outImg.pixels.length; ++i) {
+                    let x, y, u, v;
 
-                    x = (i % outImg.width) / outImg.width;
-                    y = Math.floor(i / outImg.width) / outImg.height;
+                    // Copied from my texture demo 
+                    // https://www.openprocessing.org/sketch/437855
+                    for (let i = 0; i < outImg.pixels.length; ++i) {
 
-                    u = Math.ceil(x * origImg.width);
-                    v = Math.ceil(y * origImg.height);
+                        x = (i % outImg.width) / outImg.width;
+                        y = Math.floor(i / outImg.width) / outImg.height;
 
-                    let textureIdx = (4 * v * origImg.width) + (4 * u);
+                        u = Math.ceil(x * origImg.width);
+                        v = Math.ceil(y * origImg.height);
 
-                    outImg.pixels[4 * i + 0] = origImg.pixels[textureIdx + 0];
-                    outImg.pixels[4 * i + 1] = origImg.pixels[textureIdx + 1];
-                    outImg.pixels[4 * i + 2] = origImg.pixels[textureIdx + 2];
-                    outImg.pixels[4 * i + 3] = origImg.pixels[textureIdx + 3];
+                        // TODO: rename
+                        let textureIdx = (4 * v * origImg.width) + (4 * u);
+
+                        outImg.pixels[4 * i + 0] = origImg.pixels[textureIdx + 0];
+                        outImg.pixels[4 * i + 1] = origImg.pixels[textureIdx + 1];
+                        outImg.pixels[4 * i + 2] = origImg.pixels[textureIdx + 2];
+                        outImg.pixels[4 * i + 3] = origImg.pixels[textureIdx + 3];
+                    }
+                    this.glyphs[c.id] = outImg;
+                    this.glyphs[c.id].updatePixels();
                 }
-                this.glyphs[c.id].updatePixels();
             }
         }
         this.ready = true;
@@ -230,17 +242,16 @@ p5.prototype.bitmapText = function(str, xScreenPos, yScreenPos) {
                 xKerning = currFont.kernings.get(key) || 0;
             }
 
-            // TODO: fix me
+            let yoffset = currFont.glyphMetaData[char].yoffset;
+            let xTotal = xScreenPos + xAdvance + xKerning;
+
             if (glyph) {
-                let yoffset = currFont.glyphMetaData[char].yoffset;
-                let xTotal = xScreenPos + xAdvance + xKerning;
-
                 image(glyph, xTotal, yScreenPos + yoffset);
-
-                // TODO: remove magic number
-                xAdvance += currFont.glyphMetaData[char].xadvance + 1;
-                lastChar = char;
             }
+
+            // TODO: remove magic number
+            xAdvance += currFont.glyphMetaData[char].xadvance + 1;
+            lastChar = char;
         }
     }
 };

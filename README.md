@@ -55,3 +55,5 @@ TODO:
 - jslint code
 - test perf on non-static strings
 - add static strings?
+- add docs for scale
+- add docs on how to export

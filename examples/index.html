@@ -3,32 +3,14 @@
 
 <head>
     <title>Example of p5.bitmapFont</title>
-    <script language="javascript" type="text/javascript" src="../libs/p5.min.js"></script>
+    <!-- <script language="javascript" type="text/javascript" src="../libs/p5.min.js"></script> -->
+    <script language="javascript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.3/p5.min.js"></script>
     <script language="javascript" type="text/javascript" src="../p5.bitmapFont.js"></script>
     <!-- usage -->
     <script>
     let monospacedFont,
         varWidthFont,
         varWidthFontWithKerning;
-
-    function setup() {
-        createCanvas(400, 250);
-    }
-
-    function draw() {
-        background(0);
-
-        noTint();
-        bitmapTextFont(monospacedFont);
-        bitmapText(`Monospaced font ${frameCount}`, 20, 20);
-
-        bitmapTextFont(varWidthFontWithKerning);
-        bitmapText(`AB`, 20, 90);
-
-        tint(0, 255, 0);
-        bitmapTextFont(variableWidthFont);
-        bitmapText(`-> Variable Width Font...`, 20, 50);
-    }
 
     function preload() {
         monospacedFont = loadBitmapFont('data/sonicFont@2.png', {
@@ -43,6 +25,26 @@
         variableWidthFont = loadBitmapFont('data/var-width/scumm.png', 'data/var-width/scumm.json');
 
         varWidthFontWithKerning = loadBitmapFont('data/var-width/cooper.png', 'data/var-width/cooper.json');
+    }
+
+    function setup() {
+        createCanvas(400, 250);
+    }
+
+    function draw() {
+        background(0);
+
+        push();
+        tint(0, 255, 0);
+        bitmapTextFont(variableWidthFont);
+        bitmapText(`-> Variable Width Font...`, 10, 40);
+        pop();
+
+        bitmapTextFont(monospacedFont);
+        bitmapText(`Monospaced font ${frameCount}`, 10, 10);
+
+        bitmapTextFont(varWidthFontWithKerning);
+        bitmapText(`Variable width & kerning`, 5, 70);
     }
     </script>
 </head>
