@@ -1,6 +1,6 @@
 {
   "name": "p5-bitmapfont",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "p5.bitmapFont  =============",
   "main": "p5.bitmapFont.js",
   "directories": {
