@@ -46,3 +46,12 @@ let sonicFont,
   }
 
 ```
+
+
+TODO:
+-----
+
+- fix exposed currFont var
+- jslint code
+- test perf on non-static strings
+- add static strings?

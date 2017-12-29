@@ -3,13 +3,13 @@
 
 <head>
     <title>Example of p5.bitmapFont</title>
-    <script language="javascript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.3/p5.min.js"></script>
-    <!-- <script language="javascript" type="text/javascript" src="https://rawgit.com/asalga/p5.bitmapFont/master/p5.bitmapFont.js"></script> -->
+    <script language="javascript" type="text/javascript" src="../libs/p5.min.js"></script>
     <script language="javascript" type="text/javascript" src="../p5.bitmapFont.js"></script>
     <!-- usage -->
     <script>
-    let sonicFont,
-        scummFont;
+    let monospacedFont,
+        varWidthFont,
+        varWidthFontWithKerning;
 
     function setup() {
         createCanvas(400, 250);
@@ -19,16 +19,19 @@
         background(0);
 
         noTint();
-        bitmapTextFont(sonicFont);
+        bitmapTextFont(monospacedFont);
         bitmapText(`Monospaced font ${frameCount}`, 20, 20);
 
+        bitmapTextFont(varWidthFontWithKerning);
+        bitmapText(`AB`, 20, 90);
+
         tint(0, 255, 0);
-        bitmapTextFont(scummFont);
+        bitmapTextFont(variableWidthFont);
         bitmapText(`-> Variable Width Font...`, 20, 50);
     }
 
     function preload() {
-        sonicFont = loadBitmapFont('data/sonicFont@2.png', {
+        monospacedFont = loadBitmapFont('data/sonicFont@2.png', {
             glyphWidth: 8 * 2,
             glyphHeight: 8 * 2,
             glyphBorder: 0,
@@ -37,7 +40,9 @@
             kerning: 0
         });
 
-        scummFont = loadBitmapFont('data/var-width/scumm.png', 'data/var-width/scumm.json');
+        variableWidthFont = loadBitmapFont('data/var-width/scumm.png', 'data/var-width/scumm.json');
+
+        varWidthFontWithKerning = loadBitmapFont('data/var-width/cooper.png', 'data/var-width/cooper.json');
     }
     </script>
 </head>

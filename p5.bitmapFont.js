@@ -6,7 +6,9 @@
 
   Oct 24 - Created
   Dec 27 - Added variable width font functionality
+  Dec 28 - Added kerning
 */
+'use strict';
 
 let currFont = null;
 
@@ -14,8 +16,10 @@ let BitmapFont = function() {
 
     this.glyphs = [];
     this.glyphMetaData = [];
+    this.kernings = new Map();
     this.usingGrid = true;
     this.ready = false;
+    this.kernSeparator = '_';
 
     /*
      */
@@ -23,7 +27,6 @@ let BitmapFont = function() {
         img.loadPixels();
         this.usingGrid = true;
 
-        cfg.kerning = cfg.kerning || 0;
         Object.assign(this, cfg);
 
         let charCode = 0;
@@ -49,6 +52,15 @@ let BitmapFont = function() {
         this.usingGrid = false;
 
         let chars = cfg.chars.char;
+
+        // Data could potentially not include any kerning data
+        if (cfg.kerning) {
+            let kerning = cfg.kerning.chars;
+
+            for (let k of kerning) {
+                this.kernings.set(`${k.first}${this.kernSeparator}${k.second}`, k.amount);
+            }
+        }
 
         for (let c of chars) {
             let meta = this.glyphMetaData;
@@ -77,10 +89,10 @@ let BitmapFont = function() {
                 for (let i = 0; i < outImg.pixels.length; ++i) {
 
                     x = (i % outImg.width) / outImg.width;
-                    y = floor(i / outImg.width) / outImg.height;
+                    y = Math.floor(i / outImg.width) / outImg.height;
 
-                    u = ceil(x * origImg.width);
-                    v = ceil(y * origImg.height);
+                    u = Math.ceil(x * origImg.width);
+                    v = Math.ceil(y * origImg.height);
 
                     let textureIdx = (4 * v * origImg.width) + (4 * u);
 
@@ -125,6 +137,7 @@ p5.prototype.loadBitmapFont = function(data, p2, callback) {
         callback && callback();
     }
 
+    // USING: png & json
     // loadBitmapFont('font.png', 'font.json');
     if (typeof p2 === 'string') {
         fetch(p2)
@@ -135,6 +148,7 @@ p5.prototype.loadBitmapFont = function(data, p2, callback) {
             }));
     }
 
+    // USING: image & obj
     // loadBitmapFont('font.png', {...});
     else if (typeof data === 'string') {
         p5.prototype.loadImage(data, function(img) {
@@ -143,6 +157,7 @@ p5.prototype.loadBitmapFont = function(data, p2, callback) {
         });
     }
 
+    // USING: p5Image & obj
     // let pImg = new p5.Image();
     // ...
     // loadBitmapFont(pImg);
@@ -156,6 +171,7 @@ p5.prototype.loadBitmapFont = function(data, p2, callback) {
 
 
 /*
+    TODO: refactor
  */
 p5.prototype.bitmapTextFont = function(font) {
     currFont = font;
@@ -166,17 +182,19 @@ p5.prototype.bitmapTextFont = function(font) {
   Copying the Processing API, but how should this
   accomplish the user intent...
 */
-p5.prototype.bitmapTextSize = function(size) {};
+p5.prototype.bitmapTextSize = function() {};
 
 
 /*
   Intentially similar to text() in Processing.
 
-  {String} str - string to render
-  {Number} x   - render from left to right
-  {Number} y   - baseline
+  TODO: add static option to improve efficiency.
+
+  {String} str          - string to render
+  {Number} xScreenPos   - render from left to right
+  {Number} yScreenPos   - baseline
 */
-p5.prototype.bitmapText = function(str, x, y) {
+p5.prototype.bitmapText = function(str, xScreenPos, yScreenPos) {
 
     if (currFont === null || !currFont.ready) {
         return;
@@ -193,20 +211,35 @@ p5.prototype.bitmapText = function(str, x, y) {
             // TODO: comment on magic number
             let code = str[i].charCodeAt(0) - 32;
             let glyph = currFont.getGlyph(code);
-            image(glyph, x + (i * (currFont.glyphWidth + currFont.kerning)), y);
+            image(glyph, xScreenPos + (i * (currFont.glyphWidth + currFont.kerning)), yScreenPos);
         }
-    } else {
-        let xadvance = 0;
+    }
+    // 
+    else {
+        let xAdvance = 0;
+        let lastChar = null;
 
         for (let i = 0, len = str.length; i < len; ++i) {
-            let code = str[i].charCodeAt(0);
-            let glyph = currFont.getGlyph(code);
+            let char = str[i].charCodeAt(0);
+            let glyph = currFont.getGlyph(char);
+            let xKerning = 0;
+
+            // If we are at least after the second character
+            if (i > 0) {
+                let key = `${lastChar}${currFont.kernSeparator}${char}`;
+                xKerning = currFont.kernings.get(key) || 0;
+            }
 
             // TODO: fix me
             if (glyph) {
-                let yoffset = currFont.glyphMetaData[code].yoffset;
-                image(glyph, x + xadvance, y + yoffset);
-                xadvance += currFont.glyphMetaData[code].xadvance + 1;
+                let yoffset = currFont.glyphMetaData[char].yoffset;
+                let xTotal = xScreenPos + xAdvance + xKerning;
+
+                image(glyph, xTotal, yScreenPos + yoffset);
+
+                // TODO: remove magic number
+                xAdvance += currFont.glyphMetaData[char].xadvance + 1;
+                lastChar = char;
             }
         }
     }
