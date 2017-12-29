@@ -41,11 +41,11 @@ function draw() {
     push();
     tint(0, 255, 0);
     bitmapTextFont(variableWidthFont);
-    bitmapText(`Variable Width Font...`, 10, 40);
+    bitmapText(`Variable width font...`, 10, 40);
     pop();
 
     bitmapTextFont(monospacedFont);
-    bitmapText(`Monospaced font ${frameCount}`, 10, 10);
+    bitmapText(`monospaced font`, 10, 10);
 
     bitmapTextFont(varWidthFontWithKerning);
     bitmapText(`Variable width & kerning`, 5, 70);
