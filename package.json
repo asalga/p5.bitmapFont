@@ -1,10 +1,11 @@
 {
   "name": "p5-bitmapfont",
-  "version": "1.0.3",
-  "description": "p5.bitmapFont  =============",
-  "main": "p5.bitmapFont.js",
+  "version": "0.0.1",
+  "description": "p5.bitmapFont",
+  "main": "dist/p5.bitmapFont.js",
   "directories": {
-    "example": "examples"
+    "example": "examples",
+    "dist": "dist"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,10 +14,14 @@
     "type": "git",
     "url": "git+https://github.com/asalga/p5.bitmapFont.git"
   },
-  "author": "",
+  "author": "Andor Saga",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/asalga/p5.bitmapFont/issues"
   },
+  "keywords":[
+    "p5.js",
+    "font"
+  ],
   "homepage": "https://github.com/asalga/p5.bitmapFont#readme"
 }

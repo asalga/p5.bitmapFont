@@ -1,13 +1,9 @@
 /*
+  p5.BitmapFont
   Andor Saga
   Oct 2017
-  v 1.0
 
   Render text using a bitmap with P5.js
-
-  Oct 24 - Created
-  Dec 27 - Added variable width font functionality
-  Dec 28 - Added kerning
 */
 'use strict';
 
